@@ -8037,6 +8037,25 @@
 
 <br />
 
+## [level_remove](#level_remove)
+
+### Lua Example
+`local integerValue = level_remove(levelNum)`
+
+### Parameters
+| Field | Type |
+| ----- | ---- |
+| levelNum | `integer` |
+### Returns
+- `boolean`
+
+### C Prototype
+`s16 level_remove(s16 levelNum);`
+
+[:arrow_up_small:](#)
+
+<br />
+
 ## [smlua_level_util_change_area](#smlua_level_util_change_area)
 
 ### Lua Example

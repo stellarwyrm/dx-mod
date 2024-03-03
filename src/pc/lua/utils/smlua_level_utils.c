@@ -167,6 +167,35 @@ s16 level_register(const char* scriptEntryName, s16 courseNum, const char* fullN
     return 0;
 }
 
+bool level_remove(s16 levelNum) {
+    struct CustomLevelInfo* node = sCustomLevelHead;
+
+    while (node != NULL) {
+        struct CustomLevelInfo* next = node->next;
+
+        // found level to remove (next)
+        if (next->levelNum == levelNum) {
+
+            // FREE! YOU'RE FREE! 
+            free(next->scriptEntryName);
+            next->scriptEntryName = NULL;
+            free(next->fullName);
+            next->fullName = NULL;
+            free(next->shortName);
+            next->shortName = NULL;
+
+            // linked list
+            node->next = next->next;
+            free(next);
+
+            // true if level removed
+            return true;
+        }
+        node = next;
+    }
+    return false;
+}
+
 bool level_is_vanilla_level(s16 levelNum) {
     return dynos_level_is_vanilla_level(levelNum);
 }

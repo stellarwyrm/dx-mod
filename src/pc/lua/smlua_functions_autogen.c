@@ -27847,6 +27847,23 @@ int smlua_func_level_register(lua_State* L) {
     return 1;
 }
 
+int smlua_func_level_remove(lua_State* L) {
+    if (L == NULL) { return 0; }
+
+    int top = lua_gettop(L);
+    if (top != 1) {
+        LOG_LUA_LINE("Improper param count for '%s': Expected %u, Received %u", "level_is_vanilla_level", 1, top);
+        return 0;
+    }
+
+    s16 levelNum = smlua_to_integer(L, 1);
+    if (!gSmLuaConvertSuccess) { LOG_LUA("Failed to convert parameter %u for function '%s'", 1, "level_is_vanilla_level"); return 0; }
+
+    lua_pushboolean(L, level_remove(levelNum));
+
+    return 1;
+}
+
 int smlua_func_smlua_level_util_change_area(lua_State* L) {
     if (L == NULL) { return 0; }
 

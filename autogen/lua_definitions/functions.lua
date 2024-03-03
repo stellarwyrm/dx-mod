@@ -8381,6 +8381,12 @@ function level_register(scriptEntryName, courseNum, fullName, shortName, acousti
     -- ...
 end
 
+--- @param levelNum integer
+--- @return boolean
+function level_remove(levelNum)
+    -- ...
+end
+
 --- @param areaIndex integer
 --- @return nil
 function smlua_level_util_change_area(areaIndex)
