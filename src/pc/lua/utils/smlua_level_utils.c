@@ -173,19 +173,31 @@ bool level_remove(s16 levelNum) {
     while (node != NULL) {
         struct CustomLevelInfo* next = node->next;
 
+        // got to end of linked list without finding target
+        if (next == NULL) return false;
+
         // found level to remove (next)
         if (next->levelNum == levelNum) {
 
             // FREE! YOU'RE FREE! 
-            free(next->scriptEntryName);
-            next->scriptEntryName = NULL;
-            free(next->fullName);
-            next->fullName = NULL;
-            free(next->shortName);
-            next->shortName = NULL;
+            if (next->scriptEntryName) {
+                free(next->scriptEntryName);
+                next->scriptEntryName = NULL;
+            }
+
+            if (next->fullName) {
+                free(next->fullName);
+                next->fullName = NULL;
+            }
+            
+            if (next->shortName) {
+                free(next->shortName);
+                next->shortName = NULL;
+            }
 
             // linked list
-            node->next = next->next;
+            struct CustomLevelInfo* skip = node->next;
+            node->next = skip;
             free(next);
 
             // true if level removed

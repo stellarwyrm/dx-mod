@@ -8040,7 +8040,7 @@
 ## [level_remove](#level_remove)
 
 ### Lua Example
-`local integerValue = level_remove(levelNum)`
+`local booleanValue = level_remove(levelNum)`
 
 ### Parameters
 | Field | Type |
@@ -8050,7 +8050,7 @@
 - `boolean`
 
 ### C Prototype
-`s16 level_remove(s16 levelNum);`
+`bool level_remove(s16 levelNum);`
 
 [:arrow_up_small:](#)
 

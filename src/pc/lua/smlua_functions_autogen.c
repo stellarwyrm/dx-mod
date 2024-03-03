@@ -32961,6 +32961,7 @@ void smlua_bind_functions_autogen(void) {
     // smlua_level_utils.h
     smlua_bind_function(L, "level_is_vanilla_level", smlua_func_level_is_vanilla_level);
     smlua_bind_function(L, "level_register", smlua_func_level_register);
+    smlua_bind_function(L, "level_remove", smlua_func_level_remove);
     smlua_bind_function(L, "smlua_level_util_change_area", smlua_func_smlua_level_util_change_area);
     smlua_bind_function(L, "smlua_level_util_get_info", smlua_func_smlua_level_util_get_info);
     smlua_bind_function(L, "smlua_level_util_get_info_from_course_num", smlua_func_smlua_level_util_get_info_from_course_num);
