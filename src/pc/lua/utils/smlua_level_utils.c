@@ -168,43 +168,55 @@ s16 level_register(const char* scriptEntryName, s16 courseNum, const char* fullN
 }
 
 bool level_remove(s16 levelNum) {
+
+    if (gCurrLevelNum == levelNum) return false;
+
     struct CustomLevelInfo* node = sCustomLevelHead;
 
     while (node != NULL) {
-        struct CustomLevelInfo* next = node->next;
+        struct CustomLevelInfo* check = node->next;
 
         // got to end of linked list without finding target
-        if (next == NULL) return false;
+        if (check == NULL) return false;
 
-        // found level to remove (next)
-        if (next->levelNum == levelNum) {
-
+        // found level to remove (check)
+        if (check->levelNum == levelNum) {
             // FREE! YOU'RE FREE! 
-            if (next->scriptEntryName) {
-                free(next->scriptEntryName);
-                next->scriptEntryName = NULL;
+            if (check->scriptEntryName) {
+                free(check->scriptEntryName);
+                check->scriptEntryName = NULL;
             }
 
-            if (next->fullName) {
-                free(next->fullName);
-                next->fullName = NULL;
+            if (check->fullName) {
+                free(check->fullName);
+                check->fullName = NULL;
             }
             
-            if (next->shortName) {
-                free(next->shortName);
-                next->shortName = NULL;
+            if (check->shortName) {
+                free(check->shortName);
+                check->shortName = NULL;
             }
 
             // linked list
-            struct CustomLevelInfo* skip = node->next;
+            struct CustomLevelInfo* skip = check->next;
             node->next = skip;
-            free(next);
+            free(check);
+            check = NULL;
 
-            // true if level removed
+            sCustomLevelNumNext--;
+
+            // adjust following nodes...
+            node = node->next;
+            while (node != NULL) {
+                node->levelNum--;
+                node = node->next;
+            }
             return true;
         }
-        node = next;
+
+        node = node->next;
     }
+
     return false;
 }
 
