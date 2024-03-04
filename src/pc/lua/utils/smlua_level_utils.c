@@ -167,56 +167,117 @@ s16 level_register(const char* scriptEntryName, s16 courseNum, const char* fullN
     return 0;
 }
 
-bool level_remove(s16 levelNum) {
+bool level_replace(s16 levelNum, const char* scriptEntryName, s16 courseNum, const char* fullName, const char* shortName, u32 acousticReach, u32 echoLevel1, u32 echoLevel2, u32 echoLevel3) {
 
-    if (gCurrLevelNum == levelNum) return false;
+    // Technically, this is duplicate code from level_register, but i can't be bothered to refactor atm
+    // validate params
+    if (scriptEntryName == NULL) {
+        LOG_LUA("Provided nil scriptEntryName");
+        return false;
+    }
+
+    if (fullName == NULL) {
+        LOG_LUA("Provided nil fullName");
+        return false;
+    }
+
+    if (shortName == NULL) {
+        LOG_LUA("Provided nil shortName");
+        return false;
+    }
+
+    // find script
+    LevelScript* script = dynos_get_level_script(scriptEntryName);
+    if (script == NULL) {
+        LOG_LUA("Failed to find script: %s", scriptEntryName);
+        return false;
+    }
+
+    if (gCurrLevelNum == levelNum) {
+        LOG_LUA("Cannot replace level you're currently in!");
+        return false;
+    }
 
     struct CustomLevelInfo* node = sCustomLevelHead;
+    struct CustomLevelInfo* previous = NULL;
 
     while (node != NULL) {
-        struct CustomLevelInfo* check = node->next;
-
-        // got to end of linked list without finding target
-        if (check == NULL) return false;
-
-        // found level to remove (check)
-        if (check->levelNum == levelNum) {
-            // FREE! YOU'RE FREE! 
-            if (check->scriptEntryName) {
-                free(check->scriptEntryName);
-                check->scriptEntryName = NULL;
+        // found level to replace (check)
+        if (node->levelNum == levelNum) {
+            // find duplicate
+            struct CustomLevelInfo* info = smlua_level_util_get_info_from_script(scriptEntryName);
+            if (info != NULL) {
+                LOG_LUA("Duplicate level!");
+                return false;
             }
 
-            if (check->fullName) {
-                free(check->fullName);
-                check->fullName = NULL;
+            // allocate
+            info = calloc(1, sizeof(struct CustomLevelInfo));
+            info->script = script;
+            info->scriptEntryName = strdup(scriptEntryName);
+            info->courseNum = courseNum;
+            info->levelNum = levelNum;
+            info->fullName = strdup(fullName);
+            info->shortName = strdup(shortName);
+            info->acousticReach = acousticReach;
+            info->echoLevel1 = echoLevel1;
+            info->echoLevel2 = echoLevel2;
+            info->echoLevel3 = echoLevel3;
+            if (gLuaLoadingMod) {
+                info->modIndex = gLuaLoadingMod->index;
+            } else if (gLuaActiveMod) {
+                info->modIndex = gLuaActiveMod->index;
+            } else {
+                if (info->scriptEntryName) {
+                    free(info->scriptEntryName);
+                    info->scriptEntryName = NULL;
+                }
+                if (info->fullName) {
+                    free(info->fullName);
+                    info->fullName = NULL;
+                }
+                if (info->shortName) {
+                    free(info->shortName);
+                    info->shortName = NULL;
+                }
+                free(info);
+                LOG_LUA("Failed to find mod index for level: %s", scriptEntryName);
+                return false;
+            }
+
+            // Then free the original
+            if (node->scriptEntryName) {
+                free(node->scriptEntryName);
+                node->scriptEntryName = NULL;
+            }
+
+            if (node->fullName) {
+                free(node->fullName);
+                node->fullName = NULL;
             }
             
-            if (check->shortName) {
-                free(check->shortName);
-                check->shortName = NULL;
+            if (node->shortName) {
+                free(node->shortName);
+                node->shortName = NULL;
             }
 
-            // linked list
-            struct CustomLevelInfo* skip = check->next;
-            node->next = skip;
-            free(check);
-            check = NULL;
+            // Then, replace into linked list:
 
-            sCustomLevelNumNext--;
-
-            // adjust following nodes...
-            node = node->next;
-            while (node != NULL) {
-                node->levelNum--;
-                node = node->next;
+            struct CustomLevelInfo* next = node->next;
+            info->next = next;
+            if (previous != NULL) {
+                previous->next = info;
+            } else {
+                sCustomLevelHead = info;
             }
+            free(node);
+            node = NULL;
             return true;
         }
 
         node = node->next;
     }
-
+    LOG_LUA("Could not find level with that levelNum.");
     return false;
 }
 

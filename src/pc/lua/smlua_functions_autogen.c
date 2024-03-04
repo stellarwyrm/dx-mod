@@ -27847,19 +27847,35 @@ int smlua_func_level_register(lua_State* L) {
     return 1;
 }
 
-int smlua_func_level_remove(lua_State* L) {
+int smlua_func_level_replace(lua_State* L) {
     if (L == NULL) { return 0; }
 
     int top = lua_gettop(L);
-    if (top != 1) {
-        LOG_LUA_LINE("Improper param count for '%s': Expected %u, Received %u", "level_is_vanilla_level", 1, top);
+    if (top != 9) {
+        LOG_LUA_LINE("Improper param count for '%s': Expected %u, Received %u", "level_replace", 9, top);
         return 0;
     }
 
     s16 levelNum = smlua_to_integer(L, 1);
-    if (!gSmLuaConvertSuccess) { LOG_LUA("Failed to convert parameter %u for function '%s'", 1, "level_is_vanilla_level"); return 0; }
+    if (!gSmLuaConvertSuccess) { LOG_LUA("Failed to convert parameter %u for function '%s'", 1, "level_replace"); return 0; }
+    const char* scriptEntryName = smlua_to_string(L, 2);
+    if (!gSmLuaConvertSuccess) { LOG_LUA("Failed to convert parameter %u for function '%s'", 2, "level_replace"); return 0; }
+    s16 courseNum = smlua_to_integer(L, 3);
+    if (!gSmLuaConvertSuccess) { LOG_LUA("Failed to convert parameter %u for function '%s'", 3, "level_replace"); return 0; }
+    const char* fullName = smlua_to_string(L, 4);
+    if (!gSmLuaConvertSuccess) { LOG_LUA("Failed to convert parameter %u for function '%s'", 4, "level_replace"); return 0; }
+    const char* shortName = smlua_to_string(L, 5);
+    if (!gSmLuaConvertSuccess) { LOG_LUA("Failed to convert parameter %u for function '%s'", 5, "level_replace"); return 0; }
+    u32 acousticReach = smlua_to_integer(L, 6);
+    if (!gSmLuaConvertSuccess) { LOG_LUA("Failed to convert parameter %u for function '%s'", 6, "level_replace"); return 0; }
+    u32 echoLevel1 = smlua_to_integer(L, 7);
+    if (!gSmLuaConvertSuccess) { LOG_LUA("Failed to convert parameter %u for function '%s'", 7, "level_replace"); return 0; }
+    u32 echoLevel2 = smlua_to_integer(L, 8);
+    if (!gSmLuaConvertSuccess) { LOG_LUA("Failed to convert parameter %u for function '%s'", 8, "level_replace"); return 0; }
+    u32 echoLevel3 = smlua_to_integer(L, 9);
+    if (!gSmLuaConvertSuccess) { LOG_LUA("Failed to convert parameter %u for function '%s'", 9, "level_replace"); return 0; }
 
-    lua_pushboolean(L, level_remove(levelNum));
+    lua_pushboolean(L, level_replace(levelNum, scriptEntryName, courseNum, fullName, shortName, acousticReach, echoLevel1, echoLevel2, echoLevel3));
 
     return 1;
 }
@@ -32961,7 +32977,7 @@ void smlua_bind_functions_autogen(void) {
     // smlua_level_utils.h
     smlua_bind_function(L, "level_is_vanilla_level", smlua_func_level_is_vanilla_level);
     smlua_bind_function(L, "level_register", smlua_func_level_register);
-    smlua_bind_function(L, "level_remove", smlua_func_level_remove);
+    smlua_bind_function(L, "level_replace", smlua_func_level_replace);
     smlua_bind_function(L, "smlua_level_util_change_area", smlua_func_smlua_level_util_change_area);
     smlua_bind_function(L, "smlua_level_util_get_info", smlua_func_smlua_level_util_get_info);
     smlua_bind_function(L, "smlua_level_util_get_info_from_course_num", smlua_func_smlua_level_util_get_info_from_course_num);

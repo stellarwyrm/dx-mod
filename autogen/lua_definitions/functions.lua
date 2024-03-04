@@ -8383,7 +8383,7 @@ end
 
 --- @param levelNum integer
 --- @return boolean
-function level_remove(levelNum)
+function level_replace(levelNum, scriptEntryName, courseNum, fullName, shortName, acousticReach, echoLevel1, echoLevel2, echoLevel3)
     -- ...
 end
 

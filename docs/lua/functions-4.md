@@ -8037,10 +8037,10 @@
 
 <br />
 
-## [level_remove](#level_remove)
+## [level_replace](#level_replace)
 
 ### Lua Example
-`local booleanValue = level_remove(levelNum)`
+`local booleanValue = level_replace(levelNum, courseNum, fullName, shortName, acousticReach, echoLevel1, echoLevel2, echoLevel3)`
 
 ### Parameters
 | Field | Type |
@@ -8050,7 +8050,7 @@
 - `boolean`
 
 ### C Prototype
-`bool level_remove(s16 levelNum);`
+`bool level_replace(s16 levelNum, const char* scriptEntryName, s16 courseNum, const char* fullName, const char* shortName, u32 acousticReach, u32 echoLevel1, u32 echoLevel2, u32 echoLevel3);`
 
 [:arrow_up_small:](#)
 
