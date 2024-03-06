@@ -274,7 +274,7 @@ bool level_replace(s16 levelNum, const char* scriptEntryName, s16 courseNum, con
             node = NULL;
             return true;
         }
-
+        previous = node;
         node = node->next;
     }
     LOG_LUA("Could not find level with that levelNum.");
