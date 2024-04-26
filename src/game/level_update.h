@@ -100,7 +100,7 @@ extern s16 gChangeActNum;
 
 struct WarpDest {
     u8 type;
-    u8 levelNum;
+    u16 levelNum;
     u8 areaIdx;
     u8 nodeId;
     u32 arg;
