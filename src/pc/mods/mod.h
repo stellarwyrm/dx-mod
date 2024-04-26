@@ -35,12 +35,12 @@ struct Mod {
     bool selectable;
     bool renderBehindHud;
     bool deluxe;
+    bool pausable;
     size_t size;
     u8 customBehaviorIndex;
 };
 
 size_t mod_get_lua_size(struct Mod* mod);
-bool mod_get_is_autoexec(struct Mod* mod);
 void mod_activate(struct Mod* mod);
 void mod_clear(struct Mod* mod);
 bool mod_load(struct Mods* mods, char* basePath, char* modName);

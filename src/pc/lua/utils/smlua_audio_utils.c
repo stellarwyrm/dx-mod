@@ -148,7 +148,7 @@ void smlua_audio_utils_replace_sequence(u8 sequenceId, u8 bankId, u8 defaultVolu
  // bass //
 //////////
 
-#define MAX_BASS_FILES 128
+#define MAX_BASS_FILES 256
 struct BassAudio sBassAudio[MAX_BASS_FILES];
 u32 sBassAudioCount = 0;
 

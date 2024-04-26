@@ -27,7 +27,7 @@ void mods_get_main_mod_name(char* destination, u32 maxSize) {
 
     for (u16 i = 0; i < gLocalMods.entryCount; i++) {
         struct Mod* mod = gLocalMods.entries[i];
-        if (!mod->enabled || mod_get_is_autoexec(mod)) { continue; }
+        if (!mod->enabled) { continue; }
         size_t size = mod_get_lua_size(mod);
         if (size > pickedSize) {
             picked = mod;
@@ -61,11 +61,17 @@ u16 mods_get_character_select_count(void) {
     return enabled;
 }
 
-u8 mods_has_autoexec_mod(void) {
-    for (u16 i = 0; i < gLocalMods.entryCount; i++) {
-        if (mod_get_is_autoexec(gLocalMods.entries[i])) { return TRUE; }
+bool mods_get_all_pausable(void) {
+    bool pausable = true;
+
+    for (u16 i = 0; i < gActiveMods.entryCount; i++) {
+        if (!gActiveMods.entries[i]->pausable) {
+            pausable = false;
+            break;
+        }
     }
-    return FALSE;
+
+    return pausable;
 }
 
 static void mods_local_store_enabled(void) {
@@ -125,14 +131,6 @@ bool mods_generate_remote_base_path(void) {
     return true;
 }
 
-static struct Mod* get_autoexec_mod(void) {
-    for (u16 i = 0; i < gLocalMods.entryCount; i++) {
-        if (mod_get_is_autoexec(gLocalMods.entries[i])) {
-            return gLocalMods.entries[i];
-        }
-    }
-}
-
 void mods_activate(struct Mods* mods) {
     mods_clear(&gActiveMods);
 
@@ -143,11 +141,8 @@ void mods_activate(struct Mods* mods) {
         if (mod->enabled) { enabledCount++; }
     }
 
-    // is joining a game and has an autoexec mod
-    bool autoexec = mods == &gRemoteMods && mods_has_autoexec_mod();
-
     // allocate
-    gActiveMods.entries = calloc(enabledCount + autoexec, sizeof(struct Mod*));
+    gActiveMods.entries = calloc(enabledCount, sizeof(struct Mod*));
     if (gActiveMods.entries == NULL) {
         LOG_ERROR("Failed to allocate active mods table!");
         return;
@@ -156,9 +151,8 @@ void mods_activate(struct Mods* mods) {
     // copy enabled entries
     gActiveMods.entryCount = 0;
     gActiveMods.size = 0;
-    for (int i = 0; i < mods->entryCount + autoexec; i++) {
-        // checks if the mod is out of the remote mods bounds and if so, use the autoexec mod
-        struct Mod* mod = i == mods->entryCount ? get_autoexec_mod() : mods->entries[i];
+    for (int i = 0; i < mods->entryCount; i++) {
+        struct Mod* mod = mods->entries[i];
         if (mod->enabled) {
             mod->index = gActiveMods.entryCount;
             gActiveMods.entries[gActiveMods.entryCount++] = mod;
@@ -199,7 +193,7 @@ static u32 mods_count_directory(char* modsBasePath) {
 }
 
 static void mods_load(struct Mods* mods, char* modsBasePath, bool isUserModPath) {
-    if (gIsThreaded) { REFRESH_MUTEX(snprintf(gCurrLoadingSegment.str, 256, "Generating DynOS Packs in %s mod path:\n\\#808080\\%s", isUserModPath ? "user" : "local", modsBasePath)); }
+    if (gIsThreaded) { REFRESH_MUTEX(snprintf(gCurrLoadingSegment.str, 256, "Generating DynOS Packs In %s Mod Path:\n\\#808080\\%s", isUserModPath ? "User" : "Local", modsBasePath)); }
 
     // generate bins
     dynos_generate_packs(modsBasePath);
@@ -229,7 +223,7 @@ static void mods_load(struct Mods* mods, char* modsBasePath, bool isUserModPath)
     }
     f32 count = (f32) mods_count_directory(modsBasePath);
 
-    if (gIsThreaded) { REFRESH_MUTEX(snprintf(gCurrLoadingSegment.str, 256, "Loading mods in %s mod path:\n\\#808080\\%s", isUserModPath ? "user" : "local", modsBasePath)); }
+    if (gIsThreaded) { REFRESH_MUTEX(snprintf(gCurrLoadingSegment.str, 256, "Loading Mods In %s Mod Path:\n\\#808080\\%s", isUserModPath ? "User" : "Local", modsBasePath)); }
 
     // iterate
     char path[SYS_MAX_PATH] = { 0 };
@@ -238,7 +232,7 @@ static void mods_load(struct Mods* mods, char* modsBasePath, bool isUserModPath)
         // sanity check / fill path[]
         if (!directory_sanity_check(dir, modsBasePath, path)) { continue; }
 
-        if (gIsThreaded) { REFRESH_MUTEX(snprintf(gCurrLoadingSegment.str, 256, "Loading mod:\n\\#808080\\%s/%s", modsBasePath, dir->d_name)); }
+        if (gIsThreaded) { REFRESH_MUTEX(snprintf(gCurrLoadingSegment.str, 256, "Loading Mod:\n\\#808080\\%s/%s", modsBasePath, dir->d_name)); }
 
         // load the mod
         if (!mod_load(mods, modsBasePath, dir->d_name)) {

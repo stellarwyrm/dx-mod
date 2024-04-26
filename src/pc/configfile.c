@@ -165,6 +165,7 @@ unsigned int configDjuiTheme                      = DJUI_THEME_DARK;
 bool         configDjuiThemeCenter                = true;
 unsigned int configDjuiScale                      = 0;
 bool         configCoopCompatibility              = false;
+bool         configGlobalPlayerModels             = true;
 char         configLastVersion[MAX_CONFIG_STRING] = SM64COOPDX_VERSION;
 
 static const struct ConfigOption options[] = {
@@ -262,6 +263,7 @@ static const struct ConfigOption options[] = {
     {.name = "coop_custom_palette_cap",        .type = CONFIG_TYPE_COLOR , .colorValue  = &configCustomPalette.parts[CAP]},
     {.name = "coop_stay_in_level_after_star",  .type = CONFIG_TYPE_UINT  , .uintValue   = &configStayInLevelAfterStar},
     {.name = "coop_compatibility",             .type = CONFIG_TYPE_BOOL  ,  .boolValue   = &configCoopCompatibility},
+    {.name = "coopdx_global_player_models",    .type = CONFIG_TYPE_BOOL  , .boolValue   = &configGlobalPlayerModels},
     {.name = "disable_popups",                 .type = CONFIG_TYPE_BOOL  , .boolValue   = &configDisablePopups},
     {.name = "lua_profiler",                   .type = CONFIG_TYPE_BOOL  , .boolValue   = &configLuaProfiler},
 #ifdef DEVELOPMENT
@@ -480,7 +482,7 @@ static unsigned int tokenize_string(char *str, int maxTokens, char **tokens) {
 
 // Gets the config file path and caches it
 const char *configfile_name(void) {
-    return (gCLIOpts.ConfigFile[0]) ? gCLIOpts.ConfigFile : CONFIGFILE_DEFAULT;
+    return (gCLIOpts.configFile[0]) ? gCLIOpts.configFile : CONFIGFILE_DEFAULT;
 }
 
 const char *configfile_backup_name(void) {

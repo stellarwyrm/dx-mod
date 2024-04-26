@@ -1335,7 +1335,9 @@ s32 play_mode_paused(void) {
         game_exit();
     }*/
 
-    gCameraMovementFlags &= ~CAM_MOVE_PAUSE_SCREEN;
+    if (!gLevelValues.zoomOutCameraOnPause || !network_check_singleplayer_pause()) {
+        gCameraMovementFlags &= ~CAM_MOVE_PAUSE_SCREEN;
+    }
     return 0;
 }
 
@@ -1667,8 +1669,13 @@ s32 update_level(void) {
             changeLevel = play_mode_normal();
             break;
         case PLAY_MODE_PAUSED:
-            changeLevel = play_mode_normal();
-            changeLevel = play_mode_paused();
+            if (!network_check_singleplayer_pause()) {
+                changeLevel = play_mode_normal();
+            }
+
+            if (sCurrPlayMode == PLAY_MODE_PAUSED) {
+                changeLevel = play_mode_paused();
+            }
             break;
         case PLAY_MODE_CHANGE_AREA:
             changeLevel = play_mode_change_area();

@@ -2,11 +2,9 @@
 #include "djui_panel.h"
 #include "djui_panel_menu.h"
 #include "djui_panel_menu_options.h"
-#include "djui_panel_main.h"
 #include "djui_panel_options.h"
 #include "djui_panel_language.h"
 #include "djui_panel_info.h"
-#include "djui_panel_changelog.h"
 #include "pc/utils/misc.h"
 #include "pc/configfile.h"
 #include "game/hardcoded.h"
@@ -18,9 +16,6 @@ static void djui_panel_compatibility_checkbox_on_value_change(UNUSED struct Djui
 #ifdef DISCORD_SDK
     gDiscordInitialized = false;
 #endif
-    if (gVersionText != NULL) {
-        djui_text_set_text(gVersionText, get_version_local());
-    }
 }
 
 #ifdef DEVELOPMENT
@@ -61,7 +56,6 @@ void djui_panel_misc_create(struct DjuiBase* caller) {
         djui_button_create(body, DLANG(MISC, LANGUAGE), DJUI_BUTTON_STYLE_NORMAL, djui_panel_language_create);
         djui_button_create(body, DLANG(MISC, MENU_OPTIONS), DJUI_BUTTON_STYLE_NORMAL, djui_panel_main_menu_create);
         djui_button_create(body, DLANG(MISC, INFORMATION), DJUI_BUTTON_STYLE_NORMAL, djui_panel_info_create);
-        djui_button_create(body, DLANG(MISC, CHANGELOG), DJUI_BUTTON_STYLE_NORMAL, djui_panel_changelog_create);
 #ifdef DEVELOPMENT
         djui_button_create(body, DLANG(MISC, DEBUG), DJUI_BUTTON_STYLE_NORMAL, djui_panel_options_debug_create);
 #endif

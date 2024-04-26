@@ -2784,10 +2784,10 @@ PALETTE_WARIO = 3
 PALETTE_WALUIGI = 4
 
 --- @type PalettePreset
-PALETTE_YOSHI = 5
+PALETTE_TOADETTE = 5
 
 --- @type PalettePreset
-PALETTE_TOADETTE = 6
+PALETTE_YOSHI = 6
 
 --- @type PalettePreset
 PALETTE_BUCKEN_BERRY = 7
@@ -3523,6 +3523,9 @@ ENVFX_LAVA_BUBBLES = 12
 
 --- @type integer
 ENVFX_MODE_NONE = 0
+
+--- @type integer
+ENVFX_MODE_NO_OVERRIDE = -1
 
 --- @type integer
 ENVFX_SNOW_BLIZZARD = 3
@@ -7644,7 +7647,7 @@ YOSHI_ACT_WALK = 1
 YOSHI_ACT_WALK_JUMP_OFF_ROOF = 3
 
 --- @type integer
-OBJECT_POOL_CAPACITY = 960
+OBJECT_POOL_CAPACITY = 1200
 
 --- @type integer
 TIME_STOP_ACTIVE = (1 << 6)
@@ -7673,7 +7676,7 @@ TIME_STOP_UNKNOWN_0 = (1 << 0)
 OBJ_LIST_PLAYER = 0
 
 --- @type ObjectList
-OBJ_LIST_UNUSED_1 = 1
+OBJ_LIST_EXT = 1
 
 --- @type ObjectList
 OBJ_LIST_DESTRUCTIVE = 2
@@ -9357,6 +9360,9 @@ HUD_DISPLAY_FLAGS = 5
 
 --- @type HudDisplayValue
 HUD_DISPLAY_TIMER = 6
+
+--- @type HudDisplayValue
+HUD_DISPLAY_CAMERA_STATUS = 7
 
 --- @class ModelExtendedId
 
@@ -12599,7 +12605,7 @@ MINOR_VERSION_NUMBER = 1
 PATCH_VERSION_NUMBER = 0
 
 --- @type string
-SM64COOPDX_VERSION = "v0.1.4"
+SM64COOPDX_VERSION = "0.2"
 
 --- @type integer
 VERSION_NUMBER = 36

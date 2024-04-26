@@ -115,15 +115,15 @@ bool network_init(enum NetworkType inNetworkType, bool reconnecting) {
 
     // set server settings
     gServerSettings.playerInteractions = configPlayerInteraction;
-    gServerSettings.bouncyLevelBounds = configBouncyLevelBounds;
+    gServerSettings.bouncyLevelBounds = configCoopCompatibility ? 0 : configBouncyLevelBounds;
     gServerSettings.playerKnockbackStrength = configPlayerKnockbackStrength;
     gServerSettings.stayInLevelAfterStar = configStayInLevelAfterStar;
-    gServerSettings.skipIntro = configSkipIntro;
+    gServerSettings.skipIntro = gCLIOpts.skipIntro ? TRUE : configSkipIntro;
     gServerSettings.enableCheats = 0;
     gServerSettings.bubbleDeath = configBubbleDeath;
     gServerSettings.enablePlayersInLevelDisplay = TRUE;
     gServerSettings.enablePlayerList = TRUE;
-    gServerSettings.nametags = configNametags;
+    gServerSettings.nametags = configCoopCompatibility ? FALSE : configNametags;
     gServerSettings.maxPlayers = configAmountofPlayers;
 #if defined(RAPI_DUMMY) || defined(WAPI_DUMMY)
     gServerSettings.headlessServer = (inNetworkType == NT_SERVER);
@@ -493,12 +493,12 @@ void network_rehost_begin(void) {
     sNetworkRehostTimer = 2;
 }
 
+extern void djui_panel_do_host(bool reconnecting, bool playSound);
 static void network_rehost_update(void) {
-    extern void djui_panel_do_host(bool reconnecting);
     if (sNetworkRehostTimer <= 0) { return; }
     if (--sNetworkRehostTimer != 0) { return; }
 
-    djui_panel_do_host(true);
+    djui_panel_do_host(true, true);
 }
 
 static void network_update_area_timer(void) {
@@ -521,6 +521,9 @@ static void network_update_area_timer(void) {
     //brokenClock = (skipClockCount > 0);
 #endif
     if (!brokenClock) {
+        if (network_check_singleplayer_pause()) {
+            gNetworkAreaTimerClock++;
+        }
         // update network area timer
         u32 desiredNAT = gNetworkAreaTimer + 1;
         gNetworkAreaTimer = (clock_elapsed_ticks() - gNetworkAreaTimerClock);
@@ -696,7 +699,7 @@ void network_shutdown(bool sendLeaving, bool exiting, bool popup, bool reconnect
     gDialogMinWidth = 0;
     gOverrideAllowToxicGasCamera = FALSE;
 
-    struct Controller* cnt = gMarioStates[0].controller;
+    struct Controller* cnt = gPlayer1Controller;
     cnt->rawStickX = 0;
     cnt->rawStickY = 0;
     cnt->stickX = 0;
@@ -718,6 +721,8 @@ void network_shutdown(bool sendLeaving, bool exiting, bool popup, bool reconnect
 
     extern s16 gMenuMode;
     gMenuMode = -1;
+
+    reset_window_title();
 
     djui_panel_shutdown();
     extern bool gDjuiInMainMenu;

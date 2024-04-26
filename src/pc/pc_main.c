@@ -39,6 +39,7 @@
 #include "pc/network/version.h"
 #include "pc/network/socket/domain_res.h"
 #include "pc/network/network_player.h"
+#include "pc/update_checker.h"
 #include "pc/djui/djui.h"
 #include "pc/djui/djui_unicode.h"
 #include "pc/djui/djui_panel.h"
@@ -266,23 +267,9 @@ void game_exit(void) {
     exit(0);
 }
 
-void enable_autoexec_mod(void) {
-    for (int i = 0; i < gLocalMods.entryCount; i ++) {
-        struct Mod* mod = gLocalMods.entries[i];
-        if (mod_get_is_autoexec(mod)) {
-#ifdef DEVELOPMENT
-            mod->enabled = true;
-#else
-            mod->enabled = false;
-#endif
-        }
-    }
-}
-
 void* main_game_init(UNUSED void* arg) {
-    const char *gamedir = gCLIOpts.GameDir[0] ? gCLIOpts.GameDir : FS_BASEDIR;
-    const char *userpath = gCLIOpts.SavePath[0] ? gCLIOpts.SavePath : sys_user_path();
-    fs_init(sys_ropaths, gamedir, userpath);
+    const char *userpath = gCLIOpts.savePath[0] ? gCLIOpts.savePath : sys_user_path();
+    fs_init(sys_ropaths, FS_BASEDIR, userpath);
 
     if (gIsThreaded) { REFRESH_MUTEX(snprintf(gCurrLoadingSegment.str, 256, "Loading")); }
     dynos_gfx_init();
@@ -291,12 +278,16 @@ void* main_game_init(UNUSED void* arg) {
     configfile_load();
     configWindow.settings_changed = true;
     if (!djui_language_init(configLanguage)) { snprintf(configLanguage, MAX_CONFIG_STRING, "%s", ""); }
+
+    if (gCLIOpts.network != NT_SERVER) {
+        check_for_updates();
+    }
+
     dynos_packs_init();
     sync_objects_init_system();
 
     mods_init();
     enable_queued_mods();
-    enable_autoexec_mod();
     if (gIsThreaded) {
         REFRESH_MUTEX(
             gCurrLoadingSegment.percentage = 0;
@@ -314,11 +305,11 @@ void* main_game_init(UNUSED void* arg) {
         } else if (memcmp(&configPlayerPalette, &gPalettePresets[i], sizeof(struct PlayerPalette)) == 0) { break; }
     }
 
-    if (gCLIOpts.FullScreen == 1) { configWindow.fullscreen = true; }
-    else if (gCLIOpts.FullScreen == 2) { configWindow.fullscreen = false; }
+    if (gCLIOpts.fullscreen == 1) { configWindow.fullscreen = true; }
+    else if (gCLIOpts.fullscreen == 2) { configWindow.fullscreen = false; }
 
-    if (gCLIOpts.PlayerName[0] != '\0') {
-        snprintf(configPlayerName, MAX_PLAYER_STRING, "%s", gCLIOpts.PlayerName);
+    if (gCLIOpts.playerName[0] != '\0') {
+        snprintf(configPlayerName, MAX_PLAYER_STRING, "%s", gCLIOpts.playerName);
     }
 
     if (!gGfxInited) {
@@ -339,6 +330,7 @@ void* main_game_init(UNUSED void* arg) {
     gGameInited = true;
 }
 
+extern void djui_panel_do_host(bool reconnecting, bool playSound);
 int main(int argc, char *argv[]) {
 
     // Handle terminal arguments
@@ -346,12 +338,10 @@ int main(int argc, char *argv[]) {
 
 #if defined(_WIN32) || defined(_WIN64)
     // Handle Windows console
-    if (gCLIOpts.Console && AllocConsole()) {
-        FILE* fDummy;
-        freopen_s(&fDummy, "CONOUT$", "w", stdout);
-        freopen_s(&fDummy, "CONOUT$", "w", stderr);
-        freopen_s(&fDummy, "CONIN$", "r", stdin);
+    if (!gCLIOpts.console) {
+        FreeConsole();
     }
+
 #endif
 
     // Create the window straight away
@@ -383,25 +373,20 @@ int main(int argc, char *argv[]) {
     djui_init_late();
     djui_console_message_dequeue();
 
+    show_update_popup();
+
     // Init network
-    if (gCLIOpts.Network == NT_CLIENT) {
+    if (gCLIOpts.network == NT_CLIENT) {
         network_set_system(NS_SOCKET);
-        snprintf(gGetHostName, MAX_CONFIG_STRING, "%s", gCLIOpts.JoinIp);
-        snprintf(configJoinIp, MAX_CONFIG_STRING, "%s", gCLIOpts.JoinIp);
-        configJoinPort = gCLIOpts.NetworkPort;
+        snprintf(gGetHostName, MAX_CONFIG_STRING, "%s", gCLIOpts.joinIp);
+        snprintf(configJoinIp, MAX_CONFIG_STRING, "%s", gCLIOpts.joinIp);
+        configJoinPort = gCLIOpts.networkPort;
         network_init(NT_CLIENT, false);
-    } else if (gCLIOpts.Network == NT_SERVER) {
-        network_set_system(NS_SOCKET);
-        configHostPort = gCLIOpts.NetworkPort;
+    } else if (gCLIOpts.network == NT_SERVER) {
+        configNetworkSystem = NS_SOCKET;
+        configHostPort = gCLIOpts.networkPort;
 
-        // Horrible, hacky fix for mods that access marioObj straight away
-        // best fix: host with the standard main menu method
-        static struct Object sHackyObject = { 0 };
-        gMarioStates[0].marioObj = &sHackyObject;
-
-        network_init(NT_SERVER, false);
-        djui_panel_shutdown();
-        djui_panel_modlist_create(NULL);
+        djui_panel_do_host(NULL, false);
     } else {
         network_init(NT_NONE, false);
     }

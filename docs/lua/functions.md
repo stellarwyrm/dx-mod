@@ -860,6 +860,7 @@
 - level_update.h
    - [get_painting_warp_node](functions-3.md#get_painting_warp_node)
    - [initiate_painting_warp](functions-3.md#initiate_painting_warp)
+   - [level_control_timer_running](functions-3.md#level_control_timer_running)
    - [level_trigger_warp](functions-3.md#level_trigger_warp)
    - [lvl_set_current_level](functions-3.md#lvl_set_current_level)
    - [warp_special](functions-3.md#warp_special)
@@ -1130,14 +1131,14 @@
 <br />
 
 - mod_storage.h
-   - [mod_storage_clear](functions-3.md#mod_storage_clear)
-   - [mod_storage_load](functions-3.md#mod_storage_load)
-   - [mod_storage_load_bool](functions-3.md#mod_storage_load_bool)
-   - [mod_storage_load_number](functions-3.md#mod_storage_load_number)
-   - [mod_storage_remove](functions-3.md#mod_storage_remove)
-   - [mod_storage_save](functions-3.md#mod_storage_save)
-   - [mod_storage_save_bool](functions-3.md#mod_storage_save_bool)
-   - [mod_storage_save_number](functions-3.md#mod_storage_save_number)
+   - [mod_storage_clear](functions-4.md#mod_storage_clear)
+   - [mod_storage_load](functions-4.md#mod_storage_load)
+   - [mod_storage_load_bool](functions-4.md#mod_storage_load_bool)
+   - [mod_storage_load_number](functions-4.md#mod_storage_load_number)
+   - [mod_storage_remove](functions-4.md#mod_storage_remove)
+   - [mod_storage_save](functions-4.md#mod_storage_save)
+   - [mod_storage_save_bool](functions-4.md#mod_storage_save_bool)
+   - [mod_storage_save_number](functions-4.md#mod_storage_save_number)
 
 <br />
 
@@ -1154,6 +1155,7 @@
 <br />
 
 - network_utils.h
+   - [network_check_singleplayer_pause](functions-4.md#network_check_singleplayer_pause)
    - [network_get_player_text_color_string](functions-4.md#network_get_player_text_color_string)
    - [network_global_index_from_local](functions-4.md#network_global_index_from_local)
    - [network_is_moderator](functions-4.md#network_is_moderator)
@@ -1442,6 +1444,7 @@
    - [obj_set_angle](functions-4.md#obj_set_angle)
    - [obj_set_behavior](functions-4.md#obj_set_behavior)
    - [obj_set_billboard](functions-4.md#obj_set_billboard)
+   - [obj_set_character_model](functions-4.md#obj_set_character_model)
    - [obj_set_cylboard](functions-4.md#obj_set_cylboard)
    - [obj_set_face_angle](functions-4.md#obj_set_face_angle)
    - [obj_set_face_angle_to_move_angle](functions-4.md#obj_set_face_angle_to_move_angle)
@@ -1640,6 +1643,7 @@
    - [get_environment_region](functions-5.md#get_environment_region)
    - [get_fog_color](functions-5.md#get_fog_color)
    - [get_fog_intensity](functions-5.md#get_fog_intensity)
+   - [get_global_timer](functions-5.md#get_global_timer)
    - [get_got_file_coin_hi_score](functions-5.md#get_got_file_coin_hi_score)
    - [get_hand_foot_pos_x](functions-5.md#get_hand_foot_pos_x)
    - [get_hand_foot_pos_y](functions-5.md#get_hand_foot_pos_y)
@@ -1657,17 +1661,20 @@
    - [get_time](functions-5.md#get_time)
    - [get_ttc_speed_setting](functions-5.md#get_ttc_speed_setting)
    - [get_vertex_color](functions-5.md#get_vertex_color)
+   - [hud_get_flash](functions-5.md#hud_get_flash)
    - [hud_get_value](functions-5.md#hud_get_value)
    - [hud_hide](functions-5.md#hud_hide)
    - [hud_is_hidden](functions-5.md#hud_is_hidden)
    - [hud_render_power_meter](functions-5.md#hud_render_power_meter)
    - [hud_render_power_meter_interpolated](functions-5.md#hud_render_power_meter_interpolated)
+   - [hud_set_flash](functions-5.md#hud_set_flash)
    - [hud_set_value](functions-5.md#hud_set_value)
    - [hud_show](functions-5.md#hud_show)
    - [is_game_paused](functions-5.md#is_game_paused)
    - [is_transition_playing](functions-5.md#is_transition_playing)
    - [movtexqc_register](functions-5.md#movtexqc_register)
    - [play_transition](functions-5.md#play_transition)
+   - [reset_window_title](functions-5.md#reset_window_title)
    - [save_file_get_using_backup_slot](functions-5.md#save_file_get_using_backup_slot)
    - [save_file_set_using_backup_slot](functions-5.md#save_file_set_using_backup_slot)
    - [set_environment_region](functions-5.md#set_environment_region)
@@ -1687,6 +1694,7 @@
    - [set_save_file_modified](functions-5.md#set_save_file_modified)
    - [set_ttc_speed_setting](functions-5.md#set_ttc_speed_setting)
    - [set_vertex_color](functions-5.md#set_vertex_color)
+   - [set_window_title](functions-5.md#set_window_title)
 
 <br />
 

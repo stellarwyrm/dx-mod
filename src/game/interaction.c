@@ -980,7 +980,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
         m->interactObj = o;
         m->usedObj = o;
 
-        starIndex = o->oBehParams >> 24;
+        starIndex = (o->oBehParams >> 24) & (gLevelValues.useGlobalStarIds ? 0xFF : 0x1F);
 
         if (m == &gMarioStates[0]) {
             // sync the star collection
@@ -1334,8 +1334,9 @@ static u8 resolve_player_collision(struct MarioState* m, struct MarioState* m2) 
 
     // bounce
     u32 interaction = determine_interaction(m, m2->marioObj);
-    //f32 aboveFloor = m2->pos[1] - m2->floorHeight;
-    if ((interaction & INT_HIT_FROM_ABOVE)) { //} && (aboveFloor < 1)) {
+    f32 aboveFloor = m2->pos[1] - m2->floorHeight;
+    bool aboveFloorCheck = configCoopCompatibility ? (aboveFloor < 1) : true;
+    if ((interaction & INT_HIT_FROM_ABOVE) && aboveFloorCheck) {
         m2->bounceSquishTimer = max(m2->bounceSquishTimer, 4);
 
         f32 velY;

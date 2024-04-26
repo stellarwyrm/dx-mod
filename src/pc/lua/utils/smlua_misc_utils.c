@@ -12,7 +12,7 @@
 #include "pc/mods/mod.h"
 #include "pc/mods/mods.h"
 #include "pc/mods/mods_utils.h"
-
+#include "pc/pc_main.h"
 #include "game/object_list_processor.h"
 #include "game/rendering_graph_node.h"
 #include "game/level_update.h"
@@ -149,40 +149,43 @@ bool hud_is_hidden(void) {
 
 s32 hud_get_value(enum HudDisplayValue type) {
     switch (type) {
-        case HUD_DISPLAY_LIVES:  return gHudDisplay.lives;
-        case HUD_DISPLAY_COINS:  return gHudDisplay.coins;
-        case HUD_DISPLAY_STARS:  return gHudDisplay.stars;
-        case HUD_DISPLAY_WEDGES: return gHudDisplay.wedges;
-        case HUD_DISPLAY_KEYS:   return gHudDisplay.keys;
-        case HUD_DISPLAY_FLAGS:  return gHudDisplay.flags;
-        case HUD_DISPLAY_TIMER:  return gHudDisplay.timer;
+        case HUD_DISPLAY_LIVES:         return gHudDisplay.lives;
+        case HUD_DISPLAY_COINS:         return gHudDisplay.coins;
+        case HUD_DISPLAY_STARS:         return gHudDisplay.stars;
+        case HUD_DISPLAY_WEDGES:        return gHudDisplay.wedges;
+        case HUD_DISPLAY_KEYS:          return gHudDisplay.keys;
+        case HUD_DISPLAY_FLAGS:         return gHudDisplay.flags;
+        case HUD_DISPLAY_TIMER:         return gHudDisplay.timer;
+        case HUD_DISPLAY_CAMERA_STATUS: return get_hud_camera_status();
     }
     return 0;
 }
 
 void hud_set_value(enum HudDisplayValue type, s32 value) {
     switch (type) {
-        case HUD_DISPLAY_LIVES:  gHudDisplay.lives  = value; break;
-        case HUD_DISPLAY_COINS:  gHudDisplay.coins  = value; break;
-        case HUD_DISPLAY_STARS:  gHudDisplay.stars  = value; break;
-        case HUD_DISPLAY_WEDGES: gHudDisplay.wedges = value; break;
-        case HUD_DISPLAY_KEYS:   gHudDisplay.keys   = value; break;
-        case HUD_DISPLAY_FLAGS:  gHudDisplay.flags  = value; break;
-        case HUD_DISPLAY_TIMER:  gHudDisplay.timer  = value; break;
+        case HUD_DISPLAY_LIVES:         gHudDisplay.lives  = value;   break;
+        case HUD_DISPLAY_COINS:         gHudDisplay.coins  = value;   break;
+        case HUD_DISPLAY_STARS:         gHudDisplay.stars  = value;   break;
+        case HUD_DISPLAY_WEDGES:        gHudDisplay.wedges = value;   break;
+        case HUD_DISPLAY_KEYS:          gHudDisplay.keys   = value;   break;
+        case HUD_DISPLAY_FLAGS:         gHudDisplay.flags  = value;   break;
+        case HUD_DISPLAY_TIMER:         gHudDisplay.timer  = value;   break;
+        case HUD_DISPLAY_CAMERA_STATUS: set_hud_camera_status(value); break;
     }
 }
 
+extern const u8 texture_power_meter_left_side[];
+extern const u8 texture_power_meter_right_side[];
+extern const u8 texture_power_meter_full[];
+extern const u8 texture_power_meter_seven_segments[];
+extern const u8 texture_power_meter_six_segments[];
+extern const u8 texture_power_meter_five_segments[];
+extern const u8 texture_power_meter_four_segments[];
+extern const u8 texture_power_meter_three_segments[];
+extern const u8 texture_power_meter_two_segments[];
+extern const u8 texture_power_meter_one_segments[];
+
 void hud_render_power_meter(s32 health, f32 x, f32 y, f32 width, f32 height) {
-    extern const u8 texture_power_meter_left_side[];
-    extern const u8 texture_power_meter_right_side[];
-    extern const u8 texture_power_meter_full[];
-    extern const u8 texture_power_meter_seven_segments[];
-    extern const u8 texture_power_meter_six_segments[];
-    extern const u8 texture_power_meter_five_segments[];
-    extern const u8 texture_power_meter_four_segments[];
-    extern const u8 texture_power_meter_three_segments[];
-    extern const u8 texture_power_meter_two_segments[];
-    extern const u8 texture_power_meter_one_segments[];
     static struct TextureInfo sPowerMeterTexturesInfo[] = {
         { (u8*)texture_power_meter_left_side,      8, 32, 64, "texture_power_meter_left_side"      },
         { (u8*)texture_power_meter_right_side,     8, 32, 64, "texture_power_meter_right_side"     },
@@ -204,16 +207,6 @@ void hud_render_power_meter(s32 health, f32 x, f32 y, f32 width, f32 height) {
 }
 
 void hud_render_power_meter_interpolated(s32 health, f32 prevX, f32 prevY, f32 prevWidth, f32 prevHeight, f32 x, f32 y, f32 width, f32 height) {
-    extern const u8 texture_power_meter_left_side[];
-    extern const u8 texture_power_meter_right_side[];
-    extern const u8 texture_power_meter_full[];
-    extern const u8 texture_power_meter_seven_segments[];
-    extern const u8 texture_power_meter_six_segments[];
-    extern const u8 texture_power_meter_five_segments[];
-    extern const u8 texture_power_meter_four_segments[];
-    extern const u8 texture_power_meter_three_segments[];
-    extern const u8 texture_power_meter_two_segments[];
-    extern const u8 texture_power_meter_one_segments[];
     static struct TextureInfo sPowerMeterTexturesInfo[] = {
         { (u8*)texture_power_meter_left_side,      8, 32, 64, "texture_power_meter_left_side"      },
         { (u8*)texture_power_meter_right_side,     8, 32, 64, "texture_power_meter_right_side"     },
@@ -241,6 +234,14 @@ void hud_render_power_meter_interpolated(s32 health, f32 prevX, f32 prevY, f32 p
             prevX + (prevWidth - 4) / 4, prevY + prevHeight / 4, prevWidth / 64, prevHeight / 64,
             x     + (width - 4)     / 4, y     + height     / 4, width     / 64, height     / 64);
     }
+}
+
+s8 hud_get_flash(void) {
+    return gHudFlash;
+}
+
+void hud_set_flash(s8 value) {
+    gHudFlash = value;
 }
 
 ///
@@ -622,8 +623,24 @@ void set_override_envfx(s32 envfx) {
 
 ///
 
+u32 get_global_timer(void) {
+    return gGlobalTimer;
+}
+
+///
+
 bool get_coop_compatibility_enabled(void) {
     return configCoopCompatibility;
+}
+
+///
+
+void set_window_title(const char* title) {
+    WAPI.set_window_title(title);
+}
+
+void reset_window_title(void) {
+    WAPI.reset_window_title();
 }
 
 ///

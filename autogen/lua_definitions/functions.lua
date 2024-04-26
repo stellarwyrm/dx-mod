@@ -4246,6 +4246,11 @@ function initiate_painting_warp(paintingIndex)
     -- ...
 end
 
+--- @return integer
+function level_control_timer_running()
+    -- ...
+end
+
 --- @param m MarioState
 --- @param warpOp integer
 --- @return integer
@@ -5877,6 +5882,11 @@ end
 --- @param a integer
 --- @return nil
 function network_player_set_description(np, description, r, g, b, a)
+    -- ...
+end
+
+--- @return boolean
+function network_check_singleplayer_pause()
     -- ...
 end
 
@@ -7684,6 +7694,14 @@ function obj_set_billboard(obj)
 end
 
 --- @param obj Object
+--- @param index integer
+--- @param modelID integer
+--- @return nil
+function obj_set_character_model(obj, index, modelID)
+    -- ...
+end
+
+--- @param obj Object
 --- @return nil
 function obj_set_cylboard(obj)
     -- ...
@@ -8733,6 +8751,11 @@ function get_fog_intensity()
     -- ...
 end
 
+--- @return integer
+function get_global_timer()
+    -- ...
+end
+
 --- @return boolean
 function get_got_file_coin_hi_score()
     -- ...
@@ -8828,6 +8851,11 @@ function get_vertex_color(index)
     -- ...
 end
 
+--- @return integer
+function hud_get_flash()
+    -- ...
+end
+
 --- @param type HudDisplayValue
 --- @return integer
 function hud_get_value(type)
@@ -8865,6 +8893,12 @@ end
 --- @param height number
 --- @return nil
 function hud_render_power_meter_interpolated(health, prevX, prevY, prevWidth, prevHeight, x, y, width, height)
+    -- ...
+end
+
+--- @param value integer
+--- @return nil
+function hud_set_flash(value)
     -- ...
 end
 
@@ -8906,6 +8940,11 @@ end
 --- @param blue integer
 --- @return nil
 function play_transition(transType, time, red, green, blue)
+    -- ...
+end
+
+--- @return nil
+function reset_window_title()
     -- ...
 end
 
@@ -9024,6 +9063,12 @@ end
 --- @param value integer
 --- @return nil
 function set_vertex_color(index, value)
+    -- ...
+end
+
+--- @param title string
+--- @return nil
+function set_window_title(title)
     -- ...
 end
 

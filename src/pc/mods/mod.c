@@ -20,11 +20,6 @@ size_t mod_get_lua_size(struct Mod* mod) {
     return size;
 }
 
-bool mod_get_is_autoexec(struct Mod* mod) {
-    if (!strcmp(mod->name, "autoexec") || !strcmp(mod->name, "autoexec.lua")) { return true; }
-    return false;
-}
-
 static void mod_activate_bin(struct ModFile* file) {
     // copy geo name
     char geoName[64] = { 0 };
@@ -439,6 +434,8 @@ static void mod_extract_fields(struct Mod* mod) {
             }
         } else if (!mod->deluxe && (extracted = extract_lua_field("-- deluxe:", buffer))) {
             mod->deluxe = !strcmp(extracted, "true");
+        } else if (!mod->pausable && (extracted = extract_lua_field("-- pausable:", buffer))) {
+            mod->pausable = !strcmp(extracted, "true");
         }
     }
 

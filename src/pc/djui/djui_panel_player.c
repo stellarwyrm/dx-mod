@@ -20,6 +20,8 @@ static struct DjuiSelectionbox* sPalettePresetSelection;
 static struct DjuiInputbox* sHexColorTextBox;
 static struct DjuiSlider *sSliderR, *sSliderG, *sSliderB;
 
+bool gDjuiPanelPlayerCreated = false;
+
 static void djui_panel_player_edit_palette_update_hex_code_box(void) {
     char buf[7];
     static const char digitToChar[] = "0123456789abcdef";
@@ -164,6 +166,7 @@ static void djui_panel_player_edit_palette_create(struct DjuiBase* caller) {
     }
 
     djui_panel_add(caller, panel, NULL);
+    gDjuiPanelPlayerCreated = true;
 }
 
 static bool djui_panel_player_name_valid(char* buffer) {
@@ -278,8 +281,8 @@ void djui_panel_player_create(struct DjuiBase* caller) {
             DLANG(PALETTE, TOAD),
             DLANG(PALETTE, WARIO),
             aprilFools ? "Lame Shitilizer" : DLANG(PALETTE, WALUIGI),
-            DLANG(PALETTE, YOSHI),
             DLANG(PALETTE, TOADETTE),
+            DLANG(PALETTE, YOSHI),
             DLANG(PALETTE, BUCKEN_BERRY),
             DLANG(PALETTE, ALA_GOLD),
             DLANG(PALETTE, FIRE_MARIO),
@@ -337,4 +340,5 @@ void djui_panel_player_create(struct DjuiBase* caller) {
 
     struct DjuiPanel* p = djui_panel_add(caller, panel, NULL);
     p->on_panel_destroy = djui_panel_player_destroy;
+    gDjuiPanelPlayerCreated = true;
 }
