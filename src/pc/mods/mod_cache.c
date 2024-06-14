@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
-#define DISABLE_MODULE_LOG 1
+#define DISABLE_MODULE_LOG 0
 #include "pc/debuglog.h"
 #include "mod_cache.h"
 #include "mods.h"

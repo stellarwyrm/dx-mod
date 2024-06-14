@@ -11,7 +11,7 @@
 #include "object_fields.h"
 #include "behavior_table.h"
 #include "model_ids.h"
-#define DISABLE_MODULE_LOG 1
+#define DISABLE_MODULE_LOG 0
 #include "pc/debuglog.h"
 
 // TODO: move to common utility location
